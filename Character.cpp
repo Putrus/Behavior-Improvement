@@ -12,10 +12,13 @@ Character::Character(std::string name)
 	this->speed_y = 0;
 	this->sprite->setTextureRect(sf::IntRect(0, 0, 256, 256));
 	this->in_air = false;
-	this->sprite->setOrigin(PhysicsManager::getBounds(this->name,0), PhysicsManager::getBounds(this->name,1));
+	this->sprite->setOrigin(PhysicsManager::getBounds(this->name, 0), PhysicsManager::getBounds(this->name, 1));
 	this->bound_x = PhysicsManager::getBounds(this->name, 2);
 	this->bound_y = PhysicsManager::getBounds(this->name, 3);
-
+	this->walls.push_back(1080.f);
+	this->walls.push_back(0.f);
+	this->walls.push_back(1920.f);
+	this->walls.push_back(-200.f);
 }
 
 
@@ -105,22 +108,24 @@ void Character::jump()
 	}
 
 //funkcja sprawdzajaca czy jest w powietrzu i jesli tak to gdzie ma spasc - grawitacja
-void Character::gravity(float ground)
+void Character::gravity()
 {
-	if (this->getPosition().y < ground)
+	if (this->getPosition().y != this->walls[0] - this->bound_y)
 	{
-		std::cout << "ground: " << ground << std::endl;
 		this->in_air = true;
 		this->speed_y += PhysicsManager::getGravity();
-		if ((this->getPosition().y + this->bound_y) > ground)
+		if ((this->getPosition().y + this->bound_y) >= this->walls[0])
 		{
-			
 			this->speed_y = 0;
-			this->setPosition(this->getPosition().x, ground - this->bound_y);
+			this->setPosition(this->getPosition().x, this->walls[0] - this->bound_y);
 			this->in_air = false;
 		}
 	}
 }
+
+
+
+
 
 //zawracanie
 void Character::turn(bool right)
@@ -140,7 +145,10 @@ void Character::turn(bool right)
 
 void Character::move(std::vector<Platform*> *platforms)
 {
-	this->gravity(this->calcWalls(platforms)[0]);
+	this->calcWalls(platforms);
+	this->gravity();
+	this->checkCollision();
+	
 	this->setPosition(this->getPosition().x + this->speed_x, this->getPosition().y+this->speed_y);
 	
 }
@@ -171,25 +179,80 @@ void Character::control()
 }
 
 
-float* Character::calcWalls(std::vector<Platform*> *platforms)
+void Character::calcWalls(std::vector<Platform*> *platforms)
 {
-	float result[4] = { 1080, 0,1920,-200};
+	this->walls[0] = this->getPosition().y + 1920;
+	this->walls[1] = this->getPosition().x - 1080;
+	this->walls[2] = this->getPosition().x + 1920;
+	this->walls[3] = this->getPosition().y - 1920;
 	
-	
+	float cl, cr, cu, cd;
+	cl = this->getPosition().x - this->bound_x;
+	cr = this->getPosition().x + this->bound_x;
+	cu = this->getPosition().y - this->bound_y;
+	cd = this->getPosition().y + this->bound_y;
+	float pl, pr, pu, pd;
 	for (std::vector<Platform*>::iterator it = platforms->begin(); it != platforms->end(); it++)
 	{
+			
+		pl = (*it)->getGlobalBounds().left;
+		pr = (*it)->getGlobalBounds().left + (*it)->getGlobalBounds().width;
+		pu = (*it)->getGlobalBounds().top;
+		pd = (*it)->getGlobalBounds().top + (*it)->getGlobalBounds().height;
 
 		//sprawdzanie najmniejszej odleglosci i innych wlasciwosci - czy dana platforma to spelnia result[0] - sciana dolna
-		if (((this->getPosition().y + this->bound_y) < (*it)->getGlobalBounds().top+ (*it)->getGlobalBounds().height/2) && ((this->getPosition().x -this->bound_x)< ((*it)->getGlobalBounds().left + (*it)->getGlobalBounds().width)) && ((this->getPosition().x +this->bound_x) > ((*it)->getGlobalBounds().left)) &&  (((*it)->getGlobalBounds().top - (this->getPosition().y + this->bound_y)) <= (result[0] - (this->getPosition().y + this->bound_y))))
+		if ((cd < pu + this->speed_y * 2 + 1) && (cl < pr) && (cr > pl) &&  (pu < this->walls[0]))
 		{
-			result[0] = (*it)->getGlobalBounds().top;
+			this->walls[0] = pu;
+			
 		}
-		
+	
+		if ((cl > pr) && (pr  >  this->walls[1]) && ((cu >= pu && cu <= pd) || (cd >= pu && cd <= pd) || (cu <= pu && cd >= pd)))
+		{
+			this->walls[1] = pr;
+			
+		}
+		if ((cr < pl) && (pl  < this->walls[2]) && ((cu > pu&& cu < pd) || (cd > pu&& cd < pd) || (cu <= pu && cd >= pd)))
+		{
+			this->walls[2] = pl;
+			
+		}
+		if ((cu > pd ) && (cl < pr) && (cr > pl) && (pu > this->walls[3]))
+		{
+			this->walls[3] = pd;
+		}
+
 
 	}
 	
 
-	return result;
+	
 
 }
 
+
+void Character::checkCollision()
+{
+		if ((this->getPosition().x - this->bound_x) < walls[1]-2*this->speed_x+1)
+		{
+			this->setPosition(this->walls[1] + this->bound_x - 2 * this->speed_x + 1, this->getPosition().y );
+		}
+		
+		if ((this->getPosition().x + this->bound_x) > walls[2] - 2 * this->speed_x - 1)
+		{
+			this->setPosition(this->walls[2] - this->bound_x - 2 * this->speed_x - 1, this->getPosition().y);
+		}
+		if ((this->getPosition().y - this->bound_y) < this->walls[3] -this->speed_y * 2 + 1)
+		{
+			this->speed_y = 0;
+			this->setPosition(this->getPosition().x, this->walls[3] + this->bound_y+1);
+		}
+
+	}
+
+
+
+void Character::setColor(float r, float g, float b, float a)
+{
+	this->sprite->setColor(sf::Color(r, g, b, a));
+}

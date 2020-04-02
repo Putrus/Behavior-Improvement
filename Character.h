@@ -26,6 +26,8 @@ private:
 	float bound_x;
 	float bound_y;
 
+	//akutalne sciany postaci
+	std::vector<float> walls;
 
 protected:
 public:
@@ -45,7 +47,7 @@ public:
 	void stayStill();
 	void jump();
 	//funkcja grawitacji na podstawie gdzie jest najblizsza podloga
-	void gravity(float ground);
+	void gravity();
 	//zwrot w prawo lub w lewo
 	void turn(bool right);
 	//wykonanie ruchu - dodanie speeda do biezacej pozycji
@@ -53,5 +55,10 @@ public:
 	//kontrola postacii przez gracza
 	void control();
 
-	float* calcWalls(std::vector<Platform*> *platforms);
+	//wyliczanie scian
+	void calcWalls(std::vector<Platform*> *platforms);
+	//sprawdzanie czy jest kolizja miedzy scianami
+	void checkCollision();
+
+	void setColor(float r, float g, float b, float a);
 };

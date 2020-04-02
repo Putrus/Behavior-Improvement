@@ -7,6 +7,11 @@ PhysicsManager::PhysicsManager()
 
 double PhysicsManager::gravity = 0.3;
 
+float PhysicsManager::leftWall = 0;
+float PhysicsManager::rightWall = 1920;
+float PhysicsManager::upWall = 0;
+float PhysicsManager::downWall = 1080;
+
 std::map<std::string, std::vector<float>> PhysicsManager::bounds;
 void PhysicsManager::loadCharacterBounds()
 {
@@ -47,3 +52,12 @@ float PhysicsManager::getBounds(std::string name,int index)
 }
 
 
+void PhysicsManager::setWalls(float l, float r, float u, float d)
+{
+	leftWall = l;
+	rightWall = r;
+	upWall = u;
+	downWall = d;
+
+
+}

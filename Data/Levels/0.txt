@@ -1,0 +1,7 @@
+Gravity: 4
+Size: 2 1
+Platforms: 2
+Type;Size_Size+Color_Name;Position
+0 800 100 500 600
+1 500 300 255 128 0 255 700 700
+2 Platform 1000 500

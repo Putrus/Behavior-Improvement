@@ -1,7 +1,15 @@
 Gravity: 4
 Size: 2 1
-Platforms: 2
+Background: Wood
 Type;Size_Size+Color_Name;Position
-0 800 100 500 600
-1 500 300 255 128 0 255 700 700
-2 Platform 1000 500
+2 Wood 2 0 300
+2 Wood 0 100 780
+2 Wood 3 765 370
+2 Wood 3 900 440
+2 Wood 3 1035 510
+2 Wood 3 1170 580
+2 Wood 3 1305 650
+2 Wood 3 1435 720
+2 Wood 3 1575 790
+2 Wood 2 1400 300 
+2 Wood 2 2600 300 

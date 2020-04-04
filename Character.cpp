@@ -11,16 +11,15 @@ Character::Character(std::string name)
 	this->speed_x = 0;
 	this->speed_y = 0;
 	this->sprite->setTextureRect(sf::IntRect(0, 0, 256, 256));
-	this->in_air = false;
+	this->in_air = false; 
 	this->sprite->setOrigin(PhysicsManager::getBounds(this->name, 0), PhysicsManager::getBounds(this->name, 1));
 	this->bound_x = PhysicsManager::getBounds(this->name, 2);
 	this->bound_y = PhysicsManager::getBounds(this->name, 3);
 	this->walls.push_back(1080.f);
 	this->walls.push_back(0.f);
 	this->walls.push_back(1920.f);
-	this->walls.push_back(-200.f);
+	this->walls.push_back(0.f);
 }
-
 
 
 //wyswietlanie postaci
@@ -37,11 +36,11 @@ void Character::animation()
 
 	if (this->speed_x != 0)
 	{
-		this->animation_y = 256;
+		this->animation_y = 768;
 	}
 	else
 	{
-		this->animation_y = 0;
+		this->animation_y = 512;
 	}
 
 
@@ -155,7 +154,6 @@ void Character::move(std::vector<Platform*> *platforms)
 
 
 
-
 void Character::control()
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
@@ -177,14 +175,12 @@ void Character::control()
 	}
 	
 }
-
-
 void Character::calcWalls(std::vector<Platform*> *platforms)
 {
-	this->walls[0] = this->getPosition().y + 1920;
-	this->walls[1] = this->getPosition().x - 1080;
-	this->walls[2] = this->getPosition().x + 1920;
-	this->walls[3] = this->getPosition().y - 1920;
+	this->walls[0] = PhysicsManager::getDownWall();
+	this->walls[1] = PhysicsManager::getLeftWall();
+	this->walls[2] = PhysicsManager::getRightWall();
+	this->walls[3] = PhysicsManager::getUpWall();
 	
 	float cl, cr, cu, cd;
 	cl = this->getPosition().x - this->bound_x;
@@ -217,20 +213,13 @@ void Character::calcWalls(std::vector<Platform*> *platforms)
 			this->walls[2] = pl;
 			
 		}
-		if ((cu > pd ) && (cl < pr) && (cr > pl) && (pu > this->walls[3]))
+		if ((cu >= pd)  && (cl < pr) && (cr > pl) && (pd > this->walls[3]))
 		{
 			this->walls[3] = pd;
 		}
-
-
+		
 	}
-	
-
-	
-
 }
-
-
 void Character::checkCollision()
 {
 		if ((this->getPosition().x - this->bound_x) < walls[1]-2*this->speed_x+1)
@@ -242,7 +231,7 @@ void Character::checkCollision()
 		{
 			this->setPosition(this->walls[2] - this->bound_x - 2 * this->speed_x - 1, this->getPosition().y);
 		}
-		if ((this->getPosition().y - this->bound_y) < this->walls[3] -this->speed_y * 2 + 1)
+		if ((this->getPosition().y - this->bound_y) < this->walls[3] - speed_y)
 		{
 			this->speed_y = 0;
 			this->setPosition(this->getPosition().x, this->walls[3] + this->bound_y+1);

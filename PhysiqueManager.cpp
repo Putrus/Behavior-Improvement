@@ -27,6 +27,7 @@ void PhysicsManager::loadCharacterBounds()
 		bounds[name].push_back(std::stof(c));
 		bounds[name].push_back(std::stof(d));
 	}
+	file.close();
 }
 
 void PhysicsManager::setGravity(double new_gravity)
@@ -60,4 +61,25 @@ void PhysicsManager::setWalls(float l, float r, float u, float d)
 	downWall = d;
 
 
+}
+
+
+float PhysicsManager::getLeftWall()
+{
+	return leftWall;
+}
+
+float PhysicsManager::getRightWall()
+{
+	return rightWall;
+}
+
+float PhysicsManager::getUpWall()
+{
+	return upWall;
+}
+
+float PhysicsManager::getDownWall()
+{
+	return downWall;
 }

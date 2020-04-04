@@ -21,4 +21,10 @@ public:
 	static double getGravity();
 	static float getBounds(std::string name, int index);
 	static void setWalls(float l, float r, float u, float d);
+
+	static float getLeftWall();
+	static float getRightWall();
+	static float getUpWall();
+	static float getDownWall();
+
 };

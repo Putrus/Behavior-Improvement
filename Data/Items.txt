@@ -1,0 +1,2 @@
+1 Bottle_ordinary 0 0 14 48
+2 Bottle_special 14 0 14 48

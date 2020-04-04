@@ -4,8 +4,8 @@
 #include "Character.h"
 #include "Platform.h"
 #include <ctime>
-
-
+#include "Level.h"
+#include "Item.h"
 class Game {
 
 
@@ -18,7 +18,5 @@ protected:
 public:
 	Game();
 	void run();
-	void checkCollision(Character* character, Platform* platform);
-
 
 };

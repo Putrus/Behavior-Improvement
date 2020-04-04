@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <fstream>
 #include "TextureManager.h"
 #include "TimeManager.h"
 #include "PhysicsManager.h"

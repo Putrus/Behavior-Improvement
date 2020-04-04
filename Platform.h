@@ -11,7 +11,7 @@ protected:
 public:
 	Platform(float width, float height);
 	Platform(float width, float height, sf::Color color);
-	Platform(std::string name);
+	Platform(std::string name, int type);
 
 
 	void display(sf::RenderWindow& window);

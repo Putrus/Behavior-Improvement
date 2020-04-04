@@ -65,6 +65,7 @@ void TextureManager::loadAllTextures()
 		file >> name;
 		loadTexture(name + ".png", path);
 	}
+	file.close();
 }
 
 

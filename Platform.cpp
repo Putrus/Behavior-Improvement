@@ -6,6 +6,7 @@
 Platform::Platform(float width, float height) {
 	this->shape = new sf::RectangleShape();
 	this->shape->setSize(sf::Vector2f(width, height));
+	this->shape->setFillColor(sf::Color::Black);
 	this->type = 0;
 	this->sprite = NULL;
 }
@@ -19,11 +20,27 @@ Platform::Platform(float width, float height, sf::Color color) {
 }
 
 
-Platform::Platform(std::string name){
+Platform::Platform(std::string name, int type){
 	this->sprite = new sf::Sprite();
 	this->sprite->setTexture(*TextureManager::getTexture(name + ".png"));
 	this->type = 1;
 	this->shape = NULL;
+
+
+	int t, a, b, c, d;
+	std::fstream file("Data/Platform/" + name + ".txt", std::ios::in);
+	
+	while(!file.eof())
+	{
+		file >> t >> a >> b >> c >> d;
+		if (t == type)
+		{
+			this->sprite->setTextureRect(sf::IntRect(a, b, c, d));
+			break;
+		}
+	}
+	file.close();
+
 }
 
 
